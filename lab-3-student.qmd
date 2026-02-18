@@ -3,9 +3,10 @@ title: "Lab 3: Exploring Rodents with `ggplot2`"
 author: "Gurpreet Kaur"
 format: gfm
 editor: source
+code-tools: true
 execute: 
-  eval: false
-  echo: false
+  eval: true
+  echo: true
 ---
 
 # Part 1: Setup
@@ -47,7 +48,9 @@ In the code chunk below, load in the packages necessary for your analysis. You s
 
 ```{r}
 #| label: setup
+#| echo: true
 
+library(tidyverse)
 ```
 
 # Part 2: Data Context
@@ -80,16 +83,15 @@ We are going to use the `read_csv()` function to load in the `surveys.csv` datas
 #| label: load-data
 
 surveys <- read_csv("data/surveys.csv", show_col_types = FALSE)
-#glimpse(surveys)
+glimpse(surveys)
 ```
 
 **1. What are the dimensions (# of rows and columns) of these data?**
-
-<!-- Run the commented code in the load-data chunk to address this question!  -->
+The dataset has 30,463 rows and 15 columns. 
 
 **2. What are the data types of the variables in this dataset?**
+The data has categorical as well as quantitative variables, character (chr) data type and date variable is stored as date.
 
-<!-- Run the commented code in the load-data chunk to address this question!  -->
 
 # Part 3: Exploratory Data Analysis with **`ggplot2`**
 
@@ -101,9 +103,9 @@ To build a `ggplot()`, we will use the following basic template that can be used
 #| eval: false
 #| label: ggplot-template-code
 
-ggplot(data = <DATA>,
-       mapping = aes(<VARIABLE MAPPINGS>)) +
-  <GEOM_FUNCTION>()
+#ggplot(data = <DATA>,
+    #   mapping = aes(<VARIABLE MAPPINGS>)) +
+  #<GEOM_FUNCTION>()
 ```
 
 Let's get started!
@@ -114,7 +116,16 @@ Let's get started!
 
 ```{r}
 #| label: scatterplot
-
+ggplot(data = surveys,
+       mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~ species) +
+  labs(
+    title = "Relationship Between Animal Weight and Hindfoot Length by Species",
+    subtitle = "Hindfoot Length (mm)",
+    x = "Weight (grams)",
+    y = ""
+  )
 ```
 
 We can see there are **a lot** of points plotted on top of each other. Let's try and modify this plot to extract more information from it.
@@ -147,7 +158,15 @@ It takes a larger cognitive load to read text that is rotated. It is common prac
 
 ```{r}
 #| label: boxplot
-
+ggplot(surveys, aes(x = species, y = weight)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(color = "pink", alpha = 0.04)+
+  labs(
+    title = "Distribution of Animal Weight by Species",
+    x = "Species",
+    y = "Weight (grams)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
 
@@ -190,7 +209,16 @@ Some people (and journals) prefer for boxplots to be stacked with a specific ori
 
 ```{r}
 #| label: rotated-boxplot
-
+ggplot(surveys, aes(x = species, y = weight)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(color = "pink", alpha = 0.04) +
+  labs(
+    title = "Distribution of Animal Weight by Species",
+    x = "Species",
+    y = "Weight (grams)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
 ```
 
 Notice how vertically stacked boxplots make the species labels more readable than horizontally stacked boxplots (even when the axis labels are rotated). This is good practice!
