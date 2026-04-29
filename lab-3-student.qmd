@@ -9,7 +9,7 @@ execute:
   echo: true
 ---
 
-# Part 1: Setup
+# Part 1: Setup 
 
 ## GitHub Workflow
 
